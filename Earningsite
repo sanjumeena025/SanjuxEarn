@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SanjuxEarn - Earning Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .points-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5722;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 SanjuxEarn</h1>
+        <div class="points-display" id="points">0 Points</div>
+        
+        <button onclick="earnPoints(10)">📺 Watch Ad (+10 Points)</button>
+        <button onclick="earnPoints(5)">📝 Survey (+5 Points)</button>
+        <button onclick="earnPoints(20)">🎮 Play Game (+20 Points)</button>
+        
+        <br>
+        <button onclick="redeemPoints()" style="background: #ff9800;">💵 Redeem 100 Points = ₹1</button>
+        <button onclick="resetPoints()" style="background: #f44336;">🔄 Reset</button>
+    </div>
+
+    <script>
+        let points = 0;
+
+        // Load points from localStorage
+        if(localStorage.getItem('userPoints')) {
+            points = parseInt(localStorage.getItem('userPoints'));
+            updateDisplay();
+        }
+
+        function earnPoints(amount) {
+            points += amount;
+            updateDisplay();
+            localStorage.setItem('userPoints', points);
+            alert(`🎉 +${amount} Points! Total: ${points}`);
+        }
+
+        function redeemPoints() {
+            if(points >= 100) {
+                points -= 100;
+                updateDisplay();
+                localStorage.setItem('userPoints', points);
+                alert('✅ ₹1 redeemed successfully!');
+            } else {
+                alert('❌ You need at least 100 points to redeem!');
+            }
+        }
+
+        function resetPoints() {
+            points = 0;
+            updateDisplay();
+            localStorage.setItem('userPoints', points);
+            alert('Points reset to 0');
+        }
+
+        function updateDisplay() {
+            document.getElementById('points').textContent = points + ' Points';
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html>
+<head>
+    <title>SanjuxEarn - Earning Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .points-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5722;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 SanjuxEarn</h1>
+        <div class="points-display" id="points">0 Points</div>
+        
+        <button onclick="earnPoints(10)">📺 Watch Ad (+10 Points)</button>
+        <button onclick="earnPoints(5)">📝 Survey (+5 Points)</button>
+        <button onclick="earnPoints(20)">🎮 Play Game (+20 Points)</button>
+        
+        <br>
+        <button onclick="redeemPoints()" style="background: #ff9800;">💵 Redeem 100 Points = ₹1</button>
+        <button onclick="resetPoints()" style="background: #f44336;">🔄 Reset</button>
+    </div>
+
+    <script>
+        let points = 0;
+
+        // Load points from localStorage
+        if(localStorage.getItem('userPoints')) {
+            points = parseInt(localStorage.getItem('userPoints'));
+            updateDisplay();
+        }
+
+        function earnPoints(amount) {
+            points += amount;
+            updateDisplay();
+            localStorage.setItem('userPoints', points);
+            alert(`🎉 +${amount} Points! Total: ${points}`);
+        }
+
+        function redeemPoints() {
+            if(points >= 100) {
+                points -= 100;
+                updateDisplay();
+                localStorage.setItem('userPoints', points);
+                alert('✅ ₹1 redeemed successfully!');
+            } else {
+                alert('❌ You need at least 100 points to redeem!');
+            }
+        }
+
+        function resetPoints() {
+            points = 0;
+            updateDisplay();
+            localStorage.setItem('userPoints', points);
+            alert('Points reset to 0');
+        }
+
+        function updateDisplay() {
+            document.getElementById('points').textContent = points + ' Points';
+        }
+    </script>
+</body>
+</html>
