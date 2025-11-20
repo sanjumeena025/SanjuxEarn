@@ -279,12 +279,20 @@
             width: 100%;
         }
 
-        .user-details {
-            background: rgba(255,255,255,0.05);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 5px 0;
-            font-size: 11px;
+        .refresh-indicator {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
     </style>
 </head>
@@ -293,7 +301,8 @@
         <!-- Admin Header -->
         <div class="admin-header">
             <div class="admin-title">👑 Admin Panel</div>
-            <div class="admin-subtitle">Complete Control Center</div>
+            <div class="admin-subtitle">Complete Control Center • <span id="lastUpdate">Auto-Refresh: 10s</span></div>
+            <button class="btn btn-info" onclick="loadAllData()" style="margin: 5px;">🔄 Manual Refresh</button>
             <button class="btn btn-logout" onclick="adminLogout()">🚪 Logout</button>
         </div>
 
@@ -328,7 +337,7 @@
 
         <!-- Users Management -->
         <div id="users" class="content-section active">
-            <div class="section-title">👥 User Management</div>
+            <div class="section-title">👥 User Management <span id="usersRefresh" class="refresh-indicator">Live</span></div>
             <input type="text" class="search-box" id="userSearch" placeholder="🔍 Search users..." onkeyup="searchUsers()">
             <table class="data-table">
                 <thead>
@@ -352,7 +361,7 @@
 
         <!-- Withdraw Management -->
         <div id="withdraw" class="content-section">
-            <div class="section-title">💳 Withdraw Management</div>
+            <div class="section-title">💳 Withdraw Management <span id="withdrawRefresh" class="refresh-indicator">Live</span></div>
             
             <!-- Pending Requests -->
             <div style="margin-bottom: 20px;">
@@ -468,6 +477,48 @@
     </div>
 
     <script>
+        let refreshInterval;
+        let lastRefreshTime = new Date();
+
+        // Auto-refresh function
+        function startAutoRefresh() {
+            // Clear existing interval
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Start new interval - har 10 second mein refresh
+            refreshInterval = setInterval(() => {
+                const currentTab = getCurrentTab();
+                if (currentTab === 'users') {
+                    loadUsers();
+                } else if (currentTab === 'withdraw') {
+                    loadWithdrawRequests();
+                } else if (currentTab === 'reports') {
+                    loadReports();
+                }
+                loadAllData(); // Statistics always update
+                
+                // Update last refresh time
+                lastRefreshTime = new Date();
+                updateRefreshIndicator();
+            }, 10000); // 10 seconds
+        }
+
+        function getCurrentTab() {
+            const tabs = document.querySelectorAll('.content-section.active');
+            if (tabs.length > 0) {
+                return tabs[0].id;
+            }
+            return 'users';
+        }
+
+        function updateRefreshIndicator() {
+            const now = new Date();
+            const diff = Math.floor((now - lastRefreshTime) / 1000);
+            document.getElementById('lastUpdate').textContent = `Last update: ${diff}s ago`;
+        }
+
         // Show tab function
         function showTab(tabName) {
             // Hide all content sections
@@ -504,16 +555,15 @@
             Object.values(users).forEach(user => {
                 totalPoints += user.points || 0;
             });
-            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('totalPoints').textContent = totalPoints.toFixed(1);
             
             const pending = withdrawRequests.filter(req => req.status === 'pending').length;
             document.getElementById('pendingRequests').textContent = pending;
             document.getElementById('totalEarnings').textContent = `₹${(totalPoints / 1000).toFixed(2)}`;
             
-            // Load tabs data
-            loadUsers();
-            loadWithdrawRequests();
-            loadReports();
+            // Update last refresh time
+            lastRefreshTime = new Date();
+            updateRefreshIndicator();
         }
 
         // Load users with search
@@ -542,7 +592,7 @@
                 row.innerHTML = `
                     <td>${user.name}</td>
                     <td>${user.phone}</td>
-                    <td>${user.points || 0}</td>
+                    <td>${(user.points || 0).toFixed(1)}</td>
                     <td>${user.joinedDate}</td>
                     <td>${user.lastLogin || 'Never'}</td>
                     <td>
@@ -640,7 +690,7 @@
             const growthStats = document.getElementById('growthStats');
             growthStats.innerHTML = `
                 <div>📈 Total Users: ${Object.keys(users).length}</div>
-                <div>💰 Total Points in System: ${Object.values(users).reduce((sum, user) => sum + (user.points || 0), 0)}</div>
+                <div>💰 Total Points in System: ${Object.values(users).reduce((sum, user) => sum + (user.points || 0), 0).toFixed(1)}</div>
                 <div>🎯 Average Points per User: ${Math.round(Object.values(users).reduce((sum, user) => sum + (user.points || 0), 0) / (Object.keys(users).length || 1))}</div>
                 <div>🔄 Users Joined Today: ${todayUsers}</div>
             `;
@@ -651,7 +701,7 @@
             const users = JSON.parse(localStorage.getItem('users') || '{}');
             const user = users[phone];
             if (user) {
-                alert(`👤 User Details:\n\nName: ${user.name}\nPhone: ${user.phone}\nPoints: ${user.points || 0}\nJoined: ${user.joinedDate}\nLast Login: ${user.lastLogin || 'Never'}\nTotal Earnings: ₹${((user.points || 0) / 100).toFixed(2)}`);
+                alert(`👤 User Details:\n\nName: ${user.name}\nPhone: ${user.phone}\nPoints: ${(user.points || 0).toFixed(1)}\nJoined: ${user.joinedDate}\nLast Login: ${user.lastLogin || 'Never'}\nTotal Earnings: ₹${((user.points || 0) / 100).toFixed(2)}`);
             }
         }
 
@@ -660,7 +710,7 @@
             const user = users[phone];
             const newPoints = prompt(`Edit points for ${user.name}:`, user.points || 0);
             if (newPoints !== null && !isNaN(newPoints)) {
-                users[phone].points = parseInt(newPoints);
+                users[phone].points = parseFloat(newPoints);
                 localStorage.setItem('users', JSON.stringify(users));
                 loadAllData();
                 alert('✅ User points updated!');
@@ -775,6 +825,9 @@
 
         function adminLogout() {
             localStorage.removeItem('adminLoggedIn');
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
             window.location.href = 'index.html';
         }
 
@@ -786,7 +839,8 @@
                 return;
             }
             loadAllData();
+            startAutoRefresh(); // ✅ Auto-refresh start
         };
     </script>
 </body>
-                        </html>
+                    </html>
