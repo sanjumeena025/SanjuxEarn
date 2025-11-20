@@ -93,13 +93,13 @@
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 800;
             margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 11px;
             opacity: 0.8;
         }
 
@@ -116,7 +116,7 @@
 
         .tab {
             flex: 1;
-            padding: 12px 15px;
+            padding: 12px 8px;
             text-align: center;
             background: transparent;
             border: none;
@@ -126,7 +126,8 @@
             border-radius: 10px;
             transition: all 0.3s ease;
             white-space: nowrap;
-            font-size: 14px;
+            font-size: 12px;
+            min-width: 60px;
         }
 
         .tab.active {
@@ -144,7 +145,7 @@
         }
 
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             margin-bottom: 15px;
             display: flex;
@@ -159,13 +160,13 @@
             background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             overflow: hidden;
-            font-size: 12px;
+            font-size: 11px;
             margin-bottom: 15px;
         }
 
         .data-table th,
         .data-table td {
-            padding: 12px 8px;
+            padding: 10px 6px;
             text-align: left;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -173,18 +174,19 @@
         .data-table th {
             background: rgba(255, 255, 255, 0.1);
             font-weight: 600;
-            font-size: 11px;
+            font-size: 10px;
         }
 
         /* Buttons */
         .btn {
-            padding: 8px 12px;
+            padding: 6px 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             transition: all 0.3s ease;
+            margin: 2px;
         }
 
         .btn-success {
@@ -202,30 +204,36 @@
             color: white;
         }
 
+        .btn-warning {
+            background: #FF9800;
+            color: white;
+        }
+
         .btn-logout {
             background: rgba(233, 69, 96, 0.3);
             color: #ff8a80;
             border: 1px solid rgba(233, 69, 96, 0.5);
-            padding: 10px 20px;
+            padding: 8px 15px;
             margin-top: 10px;
+            font-size: 12px;
         }
 
         /* Status Badges */
         .status-pending {
             background: #FF9800;
             color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 9px;
             font-weight: 600;
         }
 
         .status-paid {
             background: #4CAF50;
             color: white;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 9px;
             font-weight: 600;
         }
 
@@ -234,14 +242,49 @@
             text-align: center;
             padding: 30px;
             opacity: 0.7;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .controls-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 10px;
+            gap: 8px;
             margin-top: 15px;
+        }
+
+        .bonus-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .bonus-input {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 12px;
+        }
+
+        .search-box {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 12px;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .user-details {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -250,7 +293,7 @@
         <!-- Admin Header -->
         <div class="admin-header">
             <div class="admin-title">👑 Admin Panel</div>
-            <div class="admin-subtitle">SanjuxEarn - Complete Control</div>
+            <div class="admin-subtitle">Complete Control Center</div>
             <button class="btn btn-logout" onclick="adminLogout()">🚪 Logout</button>
         </div>
 
@@ -269,73 +312,33 @@
                 <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="paidRequests">0</div>
-                <div class="stat-label">Paid</div>
+                <div class="stat-value" id="totalEarnings">₹0</div>
+                <div class="stat-label">Earnings</div>
             </div>
         </div>
 
         <!-- Tabs Navigation -->
         <div class="tabs">
-            <button class="tab active" onclick="showTab('pending')">⏳ Pending</button>
-            <button class="tab" onclick="showTab('paid')">✅ Paid</button>
-            <button class="tab" onclick="showTab('users')">👥 Users</button>
+            <button class="tab active" onclick="showTab('users')">👥 Users</button>
+            <button class="tab" onclick="showTab('withdraw')">💳 Withdraw</button>
+            <button class="tab" onclick="showTab('bonus')">🎁 Bonus</button>
             <button class="tab" onclick="showTab('controls')">⚙️ Controls</button>
-        </div>
-
-        <!-- Pending Withdraw Requests -->
-        <div id="pending" class="content-section active">
-            <div class="section-title">⏳ Pending Withdraw Requests</div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>UPI</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="pendingList">
-                    <!-- Pending requests will load here -->
-                </tbody>
-            </table>
-            <div id="pendingEmpty" class="empty-state" style="display: none;">
-                No pending withdraw requests
-            </div>
-        </div>
-
-        <!-- Paid Withdraw Requests -->
-        <div id="paid" class="content-section">
-            <div class="section-title">✅ Paid Withdraw Requests</div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>User</th>
-                        <th>UPI</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="paidList">
-                    <!-- Paid requests will load here -->
-                </tbody>
-            </table>
-            <div id="paidEmpty" class="empty-state" style="display: none;">
-                No paid withdraw requests
-            </div>
+            <button class="tab" onclick="showTab('reports')">📊 Reports</button>
         </div>
 
         <!-- Users Management -->
-        <div id="users" class="content-section">
-            <div class="section-title">👥 Users Management</div>
+        <div id="users" class="content-section active">
+            <div class="section-title">👥 User Management</div>
+            <input type="text" class="search-box" id="userSearch" placeholder="🔍 Search users..." onkeyup="searchUsers()">
             <table class="data-table">
                 <thead>
                     <tr>
                         <th>Name</th>
                         <th>Phone</th>
                         <th>Points</th>
-                        <th>Action</th>
+                        <th>Joined</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="usersList">
@@ -347,14 +350,119 @@
             </div>
         </div>
 
-        <!-- Controls -->
+        <!-- Withdraw Management -->
+        <div id="withdraw" class="content-section">
+            <div class="section-title">💳 Withdraw Management</div>
+            
+            <!-- Pending Requests -->
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #FF9800;">⏳ Pending Requests</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>UPI</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingList">
+                        <!-- Pending requests will load here -->
+                    </tbody>
+                </table>
+                <div id="pendingEmpty" class="empty-state" style="display: none;">
+                    No pending withdraw requests
+                </div>
+            </div>
+
+            <!-- Paid Requests -->
+            <div>
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #4CAF50;">✅ Paid Requests</div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>UPI</th>
+                            <th>Amount</th>
+                            <th>Paid Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paidList">
+                        <!-- Paid requests will load here -->
+                    </tbody>
+                </table>
+                <div id="paidEmpty" class="empty-state" style="display: none;">
+                    No paid withdraw requests
+                </div>
+            </div>
+        </div>
+
+        <!-- Bonus Management -->
+        <div id="bonus" class="content-section">
+            <div class="section-title">🎁 Bonus Management</div>
+            
+            <div class="bonus-controls">
+                <input type="number" class="bonus-input" id="bonusPoints" placeholder="Points" value="10">
+                <button class="btn btn-success" onclick="addBonusToAll()">Add to All Users</button>
+            </div>
+
+            <div class="bonus-controls">
+                <input type="text" class="bonus-input" id="specificUser" placeholder="User Phone">
+                <button class="btn btn-info" onclick="addBonusToUser()">Add to Specific User</button>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">Quick Bonus Actions</div>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                    <button class="btn btn-warning" onclick="quickBonus(5)">+5 Points All</button>
+                    <button class="btn btn-warning" onclick="quickBonus(10)">+10 Points All</button>
+                    <button class="btn btn-warning" onclick="quickBonus(20)">+20 Points All</button>
+                    <button class="btn btn-warning" onclick="quickBonus(50)">+50 Points All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Platform Controls -->
         <div id="controls" class="content-section">
             <div class="section-title">⚙️ Platform Controls</div>
             <div class="controls-grid">
-                <button class="btn btn-success" onclick="addBonusToAll()">🎁 Add 10 Points to All Users</button>
                 <button class="btn btn-info" onclick="resetDailyLimits()">🔄 Reset Daily Limits</button>
                 <button class="btn btn-info" onclick="exportUserData()">📊 Export User Data</button>
+                <button class="btn btn-info" onclick="backupData()">💾 Backup Data</button>
+                <button class="btn btn-info" onclick="restoreData()">📥 Restore Data</button>
                 <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+        </div>
+
+        <!-- Reports -->
+        <div id="reports" class="content-section">
+            <div class="section-title">📊 Reports & Analytics</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="todayUsers">0</div>
+                    <div class="stat-label">Today Joined</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="weekUsers">0</div>
+                    <div class="stat-label">Week Joined</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="monthUsers">0</div>
+                    <div class="stat-label">Month Joined</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeUsers">0</div>
+                    <div class="stat-label">Active Today</div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">📈 User Growth</div>
+                <div id="growthStats" style="font-size: 12px;">
+                    <!-- Growth stats will load here -->
+                </div>
             </div>
         </div>
     </div>
@@ -379,9 +487,9 @@
             event.target.classList.add('active');
             
             // Load data for the tab
-            if (tabName === 'pending') loadPendingRequests();
-            if (tabName === 'paid') loadPaidRequests();
             if (tabName === 'users') loadUsers();
+            if (tabName === 'withdraw') loadWithdrawRequests();
+            if (tabName === 'reports') loadReports();
         }
 
         // Load all data
@@ -399,93 +507,28 @@
             document.getElementById('totalPoints').textContent = totalPoints;
             
             const pending = withdrawRequests.filter(req => req.status === 'pending').length;
-            const paid = withdrawRequests.filter(req => req.status === 'paid').length;
-            
             document.getElementById('pendingRequests').textContent = pending;
-            document.getElementById('paidRequests').textContent = paid;
+            document.getElementById('totalEarnings').textContent = `₹${(totalPoints / 1000).toFixed(2)}`;
             
             // Load tabs data
-            loadPendingRequests();
-            loadPaidRequests();
             loadUsers();
+            loadWithdrawRequests();
+            loadReports();
         }
 
-        // Load pending requests
-        function loadPendingRequests() {
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            const pendingList = document.getElementById('pendingList');
-            const pendingEmpty = document.getElementById('pendingEmpty');
-            
-            const pendingRequests = requests.filter(req => req.status === 'pending');
-            
-            if (pendingRequests.length === 0) {
-                pendingList.innerHTML = '';
-                pendingEmpty.style.display = 'block';
-                return;
-            }
-            
-            pendingEmpty.style.display = 'none';
-            pendingList.innerHTML = '';
-            
-            pendingRequests.forEach((request, index) => {
-                const originalIndex = requests.findIndex(req => 
-                    req.userPhone === request.userPhone && 
-                    req.amount === request.amount && 
-                    req.date === request.date
-                );
-                
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${request.userName}</td>
-                    <td style="font-size: 10px;">${request.upi}</td>
-                    <td>₹${request.rupees}</td>
-                    <td style="font-size: 10px;">${request.date.split(' ')[0]}</td>
-                    <td>
-                        <button class="btn btn-success" onclick="approveWithdraw(${originalIndex})">Pay</button>
-                        <button class="btn btn-danger" onclick="rejectWithdraw(${originalIndex})">Reject</button>
-                    </td>
-                `;
-                pendingList.appendChild(row);
-            });
-        }
-
-        // Load paid requests
-        function loadPaidRequests() {
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            const paidList = document.getElementById('paidList');
-            const paidEmpty = document.getElementById('paidEmpty');
-            
-            const paidRequests = requests.filter(req => req.status === 'paid');
-            
-            if (paidRequests.length === 0) {
-                paidList.innerHTML = '';
-                paidEmpty.style.display = 'block';
-                return;
-            }
-            
-            paidEmpty.style.display = 'none';
-            paidList.innerHTML = '';
-            
-            paidRequests.forEach(request => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${request.userName}</td>
-                    <td style="font-size: 10px;">${request.upi}</td>
-                    <td>₹${request.rupees}</td>
-                    <td style="font-size: 10px;">${request.date.split(' ')[0]}</td>
-                    <td><span class="status-paid">PAID</span></td>
-                `;
-                paidList.appendChild(row);
-            });
-        }
-
-        // Load users
+        // Load users with search
         function loadUsers() {
             const users = JSON.parse(localStorage.getItem('users') || '{}');
             const usersList = document.getElementById('usersList');
             const usersEmpty = document.getElementById('usersEmpty');
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
             
-            if (Object.keys(users).length === 0) {
+            const filteredUsers = Object.values(users).filter(user => 
+                user.name.toLowerCase().includes(searchTerm) ||
+                user.phone.includes(searchTerm)
+            );
+            
+            if (filteredUsers.length === 0) {
                 usersList.innerHTML = '';
                 usersEmpty.style.display = 'block';
                 return;
@@ -494,21 +537,136 @@
             usersEmpty.style.display = 'none';
             usersList.innerHTML = '';
             
-            Object.values(users).forEach(user => {
+            filteredUsers.forEach(user => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${user.name}</td>
                     <td>${user.phone}</td>
                     <td>${user.points || 0}</td>
+                    <td>${user.joinedDate}</td>
+                    <td>${user.lastLogin || 'Never'}</td>
                     <td>
-                        <button class="btn btn-info" onclick="editUserPoints('${user.phone}')">Edit</button>
+                        <button class="btn btn-info" onclick="viewUserDetails('${user.phone}')">View</button>
+                        <button class="btn btn-warning" onclick="editUserPoints('${user.phone}')">Edit</button>
                     </td>
                 `;
                 usersList.appendChild(row);
             });
         }
 
+        // Search users
+        function searchUsers() {
+            loadUsers();
+        }
+
+        // Load withdraw requests
+        function loadWithdrawRequests() {
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            const pendingList = document.getElementById('pendingList');
+            const paidList = document.getElementById('paidList');
+            const pendingEmpty = document.getElementById('pendingEmpty');
+            const paidEmpty = document.getElementById('paidEmpty');
+            
+            const pendingRequests = requests.filter(req => req.status === 'pending');
+            const paidRequests = requests.filter(req => req.status === 'paid');
+            
+            // Pending requests
+            if (pendingRequests.length === 0) {
+                pendingList.innerHTML = '';
+                pendingEmpty.style.display = 'block';
+            } else {
+                pendingEmpty.style.display = 'none';
+                pendingList.innerHTML = '';
+                pendingRequests.forEach((request, index) => {
+                    const originalIndex = requests.findIndex(req => 
+                        req.userPhone === request.userPhone && 
+                        req.amount === request.amount
+                    );
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${request.userName}</td>
+                        <td style="font-size: 9px;">${request.upi}</td>
+                        <td>₹${request.rupees}</td>
+                        <td style="font-size: 9px;">${request.date}</td>
+                        <td>
+                            <button class="btn btn-success" onclick="approveWithdraw(${originalIndex})">Pay</button>
+                            <button class="btn btn-danger" onclick="rejectWithdraw(${originalIndex})">Reject</button>
+                        </td>
+                    `;
+                    pendingList.appendChild(row);
+                });
+            }
+            
+            // Paid requests
+            if (paidRequests.length === 0) {
+                paidList.innerHTML = '';
+                paidEmpty.style.display = 'block';
+            } else {
+                paidEmpty.style.display = 'none';
+                paidList.innerHTML = '';
+                paidRequests.forEach(request => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${request.userName}</td>
+                        <td style="font-size: 9px;">${request.upi}</td>
+                        <td>₹${request.rupees}</td>
+                        <td style="font-size: 9px;">${request.date}</td>
+                        <td><span class="status-paid">PAID</span></td>
+                    `;
+                    paidList.appendChild(row);
+                });
+            }
+        }
+
+        // Load reports
+        function loadReports() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const today = new Date().toDateString();
+            const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toDateString();
+            const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toDateString();
+            
+            const todayUsers = Object.values(users).filter(user => user.joinedDate === today).length;
+            const weekUsers = Object.values(users).filter(user => new Date(user.joinedDate) >= new Date(oneWeekAgo)).length;
+            const monthUsers = Object.values(users).filter(user => new Date(user.joinedDate) >= new Date(oneMonthAgo)).length;
+            const activeUsers = Object.values(users).filter(user => user.lastLogin === today).length;
+            
+            document.getElementById('todayUsers').textContent = todayUsers;
+            document.getElementById('weekUsers').textContent = weekUsers;
+            document.getElementById('monthUsers').textContent = monthUsers;
+            document.getElementById('activeUsers').textContent = activeUsers;
+            
+            // Growth stats
+            const growthStats = document.getElementById('growthStats');
+            growthStats.innerHTML = `
+                <div>📈 Total Users: ${Object.keys(users).length}</div>
+                <div>💰 Total Points in System: ${Object.values(users).reduce((sum, user) => sum + (user.points || 0), 0)}</div>
+                <div>🎯 Average Points per User: ${Math.round(Object.values(users).reduce((sum, user) => sum + (user.points || 0), 0) / (Object.keys(users).length || 1))}</div>
+                <div>🔄 Users Joined Today: ${todayUsers}</div>
+            `;
+        }
+
         // Admin functions
+        function viewUserDetails(phone) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[phone];
+            if (user) {
+                alert(`👤 User Details:\n\nName: ${user.name}\nPhone: ${user.phone}\nPoints: ${user.points || 0}\nJoined: ${user.joinedDate}\nLast Login: ${user.lastLogin || 'Never'}\nTotal Earnings: ₹${((user.points || 0) / 100).toFixed(2)}`);
+            }
+        }
+
+        function editUserPoints(phone) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[phone];
+            const newPoints = prompt(`Edit points for ${user.name}:`, user.points || 0);
+            if (newPoints !== null && !isNaN(newPoints)) {
+                users[phone].points = parseInt(newPoints);
+                localStorage.setItem('users', JSON.stringify(users));
+                loadAllData();
+                alert('✅ User points updated!');
+            }
+        }
+
         function approveWithdraw(index) {
             const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
             requests[index].status = 'paid';
@@ -534,26 +692,40 @@
             alert('❌ Request rejected! Points returned to user.');
         }
 
-        function editUserPoints(phone) {
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            const user = users[phone];
-            const newPoints = prompt(`Edit points for ${user.name}:`, user.points || 0);
-            if (newPoints !== null && !isNaN(newPoints)) {
-                users[phone].points = parseInt(newPoints);
-                localStorage.setItem('users', JSON.stringify(users));
-                loadAllData();
-                alert('✅ User points updated!');
-            }
-        }
-
         function addBonusToAll() {
+            const points = parseInt(document.getElementById('bonusPoints').value) || 10;
             const users = JSON.parse(localStorage.getItem('users') || '{}');
             Object.keys(users).forEach(phone => {
-                users[phone].points = (users[phone].points || 0) + 10;
+                users[phone].points = (users[phone].points || 0) + points;
             });
             localStorage.setItem('users', JSON.stringify(users));
             loadAllData();
-            alert('🎁 +10 bonus points added to all users!');
+            alert(`🎁 +${points} points added to all users!`);
+        }
+
+        function addBonusToUser() {
+            const phone = document.getElementById('specificUser').value;
+            const points = parseInt(document.getElementById('bonusPoints').value) || 10;
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            if (users[phone]) {
+                users[phone].points = (users[phone].points || 0) + points;
+                localStorage.setItem('users', JSON.stringify(users));
+                loadAllData();
+                alert(`🎁 +${points} points added to ${users[phone].name}!`);
+            } else {
+                alert('❌ User not found!');
+            }
+        }
+
+        function quickBonus(points) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            Object.keys(users).forEach(phone => {
+                users[phone].points = (users[phone].points || 0) + points;
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+            loadAllData();
+            alert(`🎁 +${points} points added to all users!`);
         }
 
         function resetDailyLimits() {
@@ -572,11 +744,30 @@
             alert('📊 User data exported successfully!');
         }
 
+        function backupData() {
+            const backup = {
+                users: JSON.parse(localStorage.getItem('users') || '{}'),
+                withdrawRequests: JSON.parse(localStorage.getItem('withdrawRequests') || '[]'),
+                timestamp: new Date().toISOString()
+            };
+            const dataStr = JSON.stringify(backup, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sanjuxearn_backup_${new Date().getTime()}.json`;
+            link.click();
+            alert('💾 Backup created successfully!');
+        }
+
+        function restoreData() {
+            alert('📥 Restore feature would allow uploading backup file\n(In real implementation, this would handle file upload)');
+        }
+
         function clearAllData() {
             if (confirm('⚠️ ARE YOU SURE?\nThis will delete ALL users and withdraw data!')) {
                 localStorage.removeItem('users');
                 localStorage.removeItem('withdrawRequests');
-                localStorage.removeItem('adminLoggedIn');
                 alert('🗑️ All data cleared!');
                 setTimeout(() => location.reload(), 1000);
             }
@@ -598,4 +789,4 @@
         };
     </script>
 </body>
-    </html>
+                        </html>
