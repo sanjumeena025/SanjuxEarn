@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard - SanjuxEarn</title>
+    
+    <!-- Adsterra Banner Ad -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : '7e8470077f294b75c3393b4ed03ea41b',
+            'format' : 'iframe',
+            'height' : 50,
+            'width' : 320,
+            'params' : {}
+        };
+    </script>
+    <script type="text/javascript" src="//www.effectivegatecpm.com/e5n8pz2wt1.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .points-display {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff5722;
+            margin: 20px 0;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logout-btn {
+            background: #f44336;
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        .profile-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        /* Referral Section */
+        .referral-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .referral-code {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 18px;
+            margin: 10px 0;
+            border: 2px dashed #2196F3;
+        }
+        .referral-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+        }
+        .stat-box {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            min-width: 100px;
+        }
+        
+        .change-password-btn {
+            background: #2196F3;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        .withdraw-btn {
+            background: #ff9800;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        .referral-btn {
+            background: #9C27B0;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        .watch-ad-btn {
+            background: #4CAF50;
+            padding: 15px 30px;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        .change-password-form, .withdraw-form, .referral-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .change-password-form input, .withdraw-form input, .withdraw-form select, .referral-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .change-password-form button, .withdraw-form button, .referral-form button {
+            width: 48%;
+            margin: 5px;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        .error { background: #ffebee; color: #c62828; }
+        
+        .limit-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .ad-container {
+            background: #f8fff8;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        /* Ad Display Container */
+        .ad-display-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 300px;
+            text-align: center;
+        }
+        .ad-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999;
+        }
+        .close-ad-btn {
+            background: #f44336;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 SanjuxEarn</h1>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+        
+        <div class="profile-section">
+            <p>Welcome, <span id="userName">User</span>!</p>
+            <p>Phone: <span id="userPhone">9876543210</span></p>
+            <button class="change-password-btn" onclick="showChangePassword()">Change Password</button>
+        </div>
+        
+        <!-- Referral Section -->
+        <div class="referral-section">
+            <h3>👥 Refer & Earn</h3>
+            <p>Refer friends and earn <strong>50 Points</strong> when they complete 200 points!</p>
+            
+            <div class="referral-stats">
+                <div class="stat-box">
+                    <div style="font-size: 24px; color: #2196F3;" id="totalReferrals">0</div>
+                    <div>Total Referrals</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 24px; color: #4CAF50;" id="completedReferrals">0</div>
+                    <div>Completed</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 24px; color: #FF9800;" id="referralEarnings">0</div>
+                    <div>Points Earned</div>
+                </div>
+            </div>
+            
+            <p>Your Referral Code:</p>
+            <div class="referral-code" id="referralCode">LOADING...</div>
+            <button class="referral-btn" onclick="showReferralForm()">📋 Share Referral</button>
+        </div>
+        
+        <div class="points-display" id="points">0 Points</div>
+        <p><strong>🎯 10 Points = ₹1</strong></p>
+        
+        <!-- ONLY WATCH AD BUTTON -->
+        <div class="ad-container">
+            <h3>📺 Watch Ads & Earn</h3>
+            <p>Watch ads and earn real money!</p>
+            <button class="watch-ad-btn" onclick="showAdAndEarn(1)">🎬 Watch Ad (+1 Point)</button>
+            <div class="limit-info">Daily limit: <span id="ad-limit">10</span>/10 ads</div>
+            <div class="limit-info">Earn up to 10 points daily</div>
+        </div>
+        
+        <br>
+        <button class="withdraw-btn" onclick="showWithdrawForm()">💳 Withdraw Request</button>
+
+        <!-- Ad Display Popup -->
+        <div class="ad-overlay" id="adOverlay"></div>
+        <div class="ad-display-container" id="adDisplay">
+            <h3>📺 Advertisement</h3>
+            <p>Please watch this ad for 5 seconds</p>
+            <div id="adCountdown" style="font-size: 24px; color: #4CAF50; margin: 15px 0;">5</div>
+            <div id="adContent" style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                <!-- Adsterra Ad will load here -->
+                <div id="adsterra-ad-placeholder"></div>
+            </div>
+            <button class="close-ad-btn" onclick="closeAd()">Close Ad</button>
+        </div>
+
+        <!-- Referral Form -->
+        <div id="referral-form" class="referral-form">
+            <h3>📋 Share Referral</h3>
+            <p>Share this link with your friends:</p>
+            <input type="text" id="referral-link" readonly>
+            <button onclick="copyReferralLink()" style="background: #9C27B0;">Copy Link</button>
+            <button onclick="hideReferralForm()" style="background: #666;">Close</button>
+            <div id="referral-message"></div>
+        </div>
+
+        <!-- Change Password Form -->
+        <div id="change-password-form" class="change-password-form">
+            <h3>Change Your Password</h3>
+            <input type="password" id="current-password" placeholder="Current Password">
+            <input type="password" id="new-password" placeholder="New Password (min 4 characters)">
+            <input type="password" id="confirm-password" placeholder="Confirm New Password">
+            <button onclick="changePassword()" style="background: #2196F3;">Update Password</button>
+            <button onclick="hideChangePassword()" style="background: #666;">Cancel</button>
+            <div id="password-message"></div>
+        </div>
+
+        <!-- Withdraw Request Form -->
+        <div id="withdraw-form" class="withdraw-form">
+            <h3>💳 Withdraw Request</h3>
+            <input type="text" id="withdraw-name" placeholder="Your Full Name">
+            <input type="text" id="withdraw-upi" placeholder="Your UPI ID">
+            <select id="withdraw-amount">
+                <option value="10">10 Points = ₹1</option>
+                <option value="20">20 Points = ₹2</option>
+                <option value="50">50 Points = ₹5</option>
+                <option value="100">100 Points = ₹10</option>
+            </select>
+            <p><strong>Note:</strong> 10 Points = ₹1</p>
+            <button onclick="submitWithdrawRequest()" style="background: #ff9800;">Submit Request</button>
+            <button onclick="hideWithdrawForm()" style="background: #666;">Cancel</button>
+            <div id="withdraw-message"></div>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let userPoints = 0;
+        
+        // Daily Limits - Only Watch Ad
+        let dailyLimits = {
+            watchAd: 10
+        };
+
+        // Load user data
+        window.onload = function() {
+            const userData = localStorage.getItem('currentUser');
+            if (!userData) {
+                // Check for referral code in URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const referralCode = urlParams.get('ref');
+                if (referralCode) {
+                    localStorage.setItem('referralCode', referralCode);
+                }
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            currentUser = JSON.parse(userData);
+            
+            // Initialize referral data if not exists
+            if (!currentUser.referral) {
+                currentUser.referral = {
+                    code: generateReferralCode(),
+                    referredUsers: [],
+                    totalEarnings: 0,
+                    totalReferrals: 0,
+                    completedReferrals: 0
+                };
+            }
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userPhone').textContent = currentUser.phone;
+            userPoints = currentUser.points || 0;
+            updateDisplay();
+            updateLimitDisplay();
+            updateReferralDisplay();
+        };
+
+        // Generate unique referral code
+        function generateReferralCode() {
+            return 'SANJUX' + Math.random().toString(36).substr(2, 6).toUpperCase();
+        }
+
+        // Update referral display
+        function updateReferralDisplay() {
+            document.getElementById('referralCode').textContent = currentUser.referral.code;
+            document.getElementById('totalReferrals').textContent = currentUser.referral.totalReferrals;
+            document.getElementById('completedReferrals').textContent = currentUser.referral.completedReferrals;
+            document.getElementById('referralEarnings').textContent = currentUser.referral.totalEarnings;
+            
+            // Update referral link
+            const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', 'index.html');
+            document.getElementById('referral-link').value = `${baseUrl}?ref=${currentUser.referral.code}`;
+        }
+
+        // Check and award referral bonus
+        function checkReferralBonus() {
+            const referredByCode = localStorage.getItem('referralCode');
+            if (!referredByCode || userPoints < 200) return;
+
+            // Find the referrer and award bonus
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            Object.keys(users).forEach(phone => {
+                const user = users[phone];
+                if (user.referral && user.referral.code === referredByCode) {
+                    // Check if this user is already awarded
+                    if (!user.referral.referredUsers.includes(currentUser.phone)) {
+                        // Award 50 points to referrer
+                        user.points = (user.points || 0) + 50;
+                        user.referral.totalEarnings += 50;
+                        user.referral.completedReferrals += 1;
+                        user.referral.referredUsers.push(currentUser.phone);
+                        
+                        // Save updated user data
+                        localStorage.setItem('users', JSON.stringify(users));
+                        
+                        // Show message to current user
+                        showMessage('🎉 Your referrer earned 50 points!', 'success');
+                    }
+                }
+            });
+            
+            // Clear referral code after processing
+            localStorage.removeItem('referralCode');
+        }
+
+        // FIXED WATCH AD FUNCTION - No about:blank
+        function showAdAndEarn(amount) {
+            if (dailyLimits.watchAd <= 0) {
+                showMessage(`❌ Daily ad limit reached! Come back tomorrow.`, 'error');
+                return;
+            }
+
+            // Disable all buttons during ad
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Show ad popup
+            document.getElementById('adOverlay').style.display = 'block';
+            document.getElementById('adDisplay').style.display = 'block';
+
+            // Load Adsterra Ad
+            loadAdsterraAd();
+
+            let countdown = 5;
+            const countdownElement = document.getElementById('adCountdown');
+            
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    // Enable buttons
+                    buttons.forEach(btn => btn.disabled = false);
+                    
+                    // Give points
+                    userPoints += amount;
+                    dailyLimits.watchAd--;
+                    updateUserPoints();
+                    updateDisplay();
+                    updateLimitDisplay();
+                    
+                    // Check for referral bonus
+                    checkReferralBonus();
+                    
+                    // Close ad
+                    closeAd();
+                    showMessage(`🎉 +1 Point! Thanks for watching ad.`, 'success');
+                }
+            }, 1000);
+        }
+
+        // Load Adsterra Ad properly
+        function loadAdsterraAd() {
+            const adContainer = document.getElementById('adsterra-ad-placeholder');
+            adContainer.innerHTML = `
+                <script type="text/javascript">
+                    atOptions = {
+                        'key' : '7e8470077f294b75c3393b4ed03ea41b',
+                        'format' : 'iframe',
+                        'height' : 250,
+                        'width' : 300,
+                        'params' : {}
+                    };
+                <\/script>
+                <script type="text/javascript" src="//www.effectivegatecpm.com/e5n8pz2wt1.js"><\/script>
+            `;
+        }
+
+        // Close ad function
+        function closeAd() {
+            document.getElementById('adOverlay').style.display = 'none';
+            document.getElementById('adDisplay').style.display = 'none';
+        }
+
+        function updateLimitDisplay() {
+            document.getElementById('ad-limit').textContent = dailyLimits.watchAd;
+        }
+
+        function updateUserPoints() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[currentUser.phone]) {
+                users[currentUser.phone].points = userPoints;
+                users[currentUser.phone].referral = currentUser.referral;
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                currentUser.points = userPoints;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('points').textContent = userPoints + ' Points';
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.textContent = '';
+                messageDiv.className = 'message';
+            }, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Referral form functions
+        function showReferralForm() {
+            document.getElementById('referral-form').style.display = 'block';
+            document.getElementById('withdraw-form').style.display = 'none';
+            document.getElementById('change-password-form').style.display = 'none';
+        }
+
+        function hideReferralForm() {
+            document.getElementById('referral-form').style.display = 'none';
+            document.getElementById('referral-message').innerHTML = '';
+        }
+
+        function copyReferralLink() {
+            const linkInput = document.getElementById('referral-link');
+            linkInput.select();
+            document.execCommand('copy');
+            document.getElementById('referral-message').innerHTML = '<div class="success">✅ Link copied to clipboard!</div>';
+        }
+
+        // Change Password Functions
+        function showChangePassword() {
+            document.getElementById('change-password-form').style.display = 'block';
+            document.getElementById('withdraw-form').style.display = 'none';
+            document.getElementById('referral-form').style.display = 'none';
+        }
+
+        function hideChangePassword() {
+            document.getElementById('change-password-form').style.display = 'none';
+            document.getElementById('password-message').innerHTML = '';
+        }
+
+        function changePassword() {
+            const currentPass = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            const messageDiv = document.getElementById('password-message');
+
+            if (!currentPass || !newPass || !confirmPass) {
+                messageDiv.innerHTML = '<div class="error">Please fill all fields</div>';
+                return;
+            }
+
+            if (newPass.length < 4) {
+                messageDiv.innerHTML = '<div class="error">Password must be at least 4 characters</div>';
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                messageDiv.innerHTML = '<div class="error">New passwords do not match</div>';
+                return;
+            }
+
+            if (currentPass !== currentUser.password) {
+                messageDiv.innerHTML = '<div class="error">Current password is incorrect</div>';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            users[currentUser.phone].password = newPass;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            currentUser.password = newPass;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            messageDiv.innerHTML = '<div class="success">✅ Password changed successfully!</div>';
+            
+            document.getElementById('current-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            
+            setTimeout(() => {
+                hideChangePassword();
+            }, 2000);
+        }
+
+        // Withdraw Functions
+        function showWithdrawForm() {
+            document.getElementById('withdraw-form').style.display = 'block';
+            document.getElementById('change-password-form').style.display = 'none';
+            document.getElementById('referral-form').style.display = 'none';
+        }
+
+        function hideWithdrawForm() {
+            document.getElementById('withdraw-form').style.display = 'none';
+            document.getElementById('withdraw-message').innerHTML = '';
+        }
+
+        function submitWithdrawRequest() {
+            const name = document.getElementById('withdraw-name').value;
+            const upi = document.getElementById('withdraw-upi').value;
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+            const messageDiv = document.getElementById('withdraw-message');
+
+            if (!name || !upi) {
+                messageDiv.innerHTML = '<div class="error">Please fill name and UPI ID</div>';
+                return;
+            }
+
+            if (userPoints < amount) {
+                messageDiv.innerHTML = '<div class="error">Insufficient points! You have ' + userPoints + ' points</div>';
+                return;
+            }
+
+            const withdrawRequest = {
+                userPhone: currentUser.phone,
+                userName: name,
+                upiId: upi,
+                points: amount,
+                amount: amount / 10, // ₹1 per 10 points
+                status: 'pending',
+                requestDate: new Date().toLocaleString()
+            };
+
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            requests.push(withdrawRequest);
+            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+
+            userPoints -= amount;
+            updateUserPoints();
+            updateDisplay();
+
+            messageDiv.innerHTML = '<div class="success">✅ Withdraw request submitted! Payment of ₹' + (amount/10) + ' will be sent within 24 hours.</div>';
+            
+            setTimeout(() => {
+                hideWithdrawForm();
+                document.getElementById('withdraw-name').value = '';
+                document.getElementById('withdraw-upi').value = '';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
