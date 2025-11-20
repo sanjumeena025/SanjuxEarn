@@ -438,18 +438,18 @@
             <div class="section-title">📺 Watch & Earn</div>
             <div class="progress-section">
                 <div class="progress-label">
-                    <span>Daily Ads Limit</span>
-                    <span><span id="adsWatchedToday">0</span>/10</span>
+                    <span>Daily Ads Watched</span>
+                    <span><span id="adsWatchedToday">0</span>/Unlimited</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="adsProgress" style="width: 0%;"></div>
                 </div>
             </div>
             <button class="btn btn-watch" onclick="showAdAndEarn()">
-                🎬 Watch Ad & Earn +1 Point
+                🎬 Watch Ad & Earn +0.3 Point
             </button>
             <div style="font-size: 12px; opacity: 0.7; text-align: center; margin-top: 10px;">
-                Earn up to 10 points daily by watching ads
+                Unlimited ads daily! Watch as many as you want
             </div>
         </div>
 
@@ -457,7 +457,7 @@
         <div class="earning-section">
             <div class="section-title">👥 Refer & Earn</div>
             <div style="font-size: 14px; margin-bottom: 15px; opacity: 0.9;">
-                Invite friends and earn <strong>50 Points</strong> when they reach 200 points!
+                Invite friends and earn <strong>25 Points</strong> when they reach 300 points!
             </div>
             <button class="btn btn-referral" onclick="showReferralSection()">
                 📋 Invite Friends & Earn
@@ -468,7 +468,7 @@
         <div class="earning-section">
             <div class="section-title">💳 Withdraw Earnings</div>
             <div style="font-size: 14px; margin-bottom: 15px; opacity: 0.9;">
-                Minimum withdrawal: <strong>100 Points = ₹10</strong>
+                Minimum withdrawal: <strong>300 Points = ₹30</strong>
             </div>
             <button class="btn btn-withdraw" onclick="showWithdrawForm()">
                 💰 Withdraw Money
@@ -515,7 +515,6 @@
     <script>
         let currentUser = null;
         let userPoints = 0;
-        let dailyAdLimit = 10;
         let adsWatchedToday = 0;
         let totalAdsWatched = 0;
         let referralCount = 0;
@@ -544,15 +543,16 @@
             document.getElementById('userName').textContent = `Welcome, ${currentUser.name}!`;
             document.getElementById('userPhone').textContent = currentUser.phone;
             document.getElementById('joinDate').textContent = currentUser.joinedDate;
-            document.getElementById('points').textContent = userPoints;
-            document.getElementById('totalEarnings').textContent = userPoints;
+            document.getElementById('points').textContent = userPoints.toFixed(1);
+            document.getElementById('totalEarnings').textContent = userPoints.toFixed(1);
             document.getElementById('adsWatched').textContent = totalAdsWatched;
             document.getElementById('referralCount').textContent = referralCount;
             document.getElementById('loginStreak').textContent = loginStreak;
             document.getElementById('adsWatchedToday').textContent = adsWatchedToday;
             
             // Update progress bars
-            document.getElementById('adsProgress').style.width = `${(adsWatchedToday / 10) * 100}%`;
+            const progressPercent = Math.min((adsWatchedToday / 50) * 100, 100);
+            document.getElementById('adsProgress').style.width = `${progressPercent}%`;
         }
 
         // Daily Bonus System
@@ -582,17 +582,13 @@
             showMessage('🎉 Daily bonus claimed! +3 Points added to your account.', 'success');
         }
 
-        // Watch Ad Function
+        // Watch Ad Function - CHANGED TO 0.3 POINTS
         function showAdAndEarn() {
-            if (adsWatchedToday >= 10) {
-                showMessage('❌ Daily ad limit reached! Come back tomorrow.', 'error');
-                return;
-            }
-
             showMessage('📺 Loading premium advertisement...', 'success');
             
             setTimeout(() => {
-                userPoints += 1;
+                // CHANGED: 0.3 points instead of 1
+                userPoints += 0.3;
                 adsWatchedToday++;
                 totalAdsWatched++;
                 
@@ -603,7 +599,7 @@
                 // Trigger Adsterra for real earning
                 triggerAdsterraAd();
                 
-                showMessage('🎉 +1 Point! Thank you for watching the ad.', 'success');
+                showMessage('🎉 +0.3 Point! Thank you for watching the ad.', 'success');
             }, 2000);
         }
 
@@ -615,24 +611,25 @@
             }
         }
 
-        // Withdraw Function
+        // Withdraw Function - CHANGED TO 300 POINTS MINIMUM
         function showWithdrawForm() {
-            if (userPoints < 100) {
-                showMessage(`❌ Minimum 100 points required for withdrawal. You have ${userPoints} points.`, 'error');
+            if (userPoints < 300) {
+                showMessage(`❌ Minimum 300 points required for withdrawal. You have ${userPoints.toFixed(1)} points.`, 'error');
                 return;
             }
             
             const withdrawHTML = `
                 <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; margin: 20px 0;">
                     <h3 style="margin-bottom: 15px;">💳 Withdraw Money</h3>
+                    <p style="color: #ff5722; font-weight: bold; margin-bottom: 10px;">💰 Minimum 300 Points = ₹30</p>
                     <input type="text" id="withdrawName" placeholder="Full Name" value="${currentUser.name}" 
                            style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     <input type="text" id="withdrawUpi" placeholder="UPI ID (example@oksbi)" 
                            style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
                     <select id="withdrawAmount" style="width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white;">
-                        <option value="100">100 Points = ₹10</option>
-                        <option value="200">200 Points = ₹20</option>
-                        <option value="500">500 Points = ₹50</option>
+                        <option value="300">300 Points = ₹30</option>
+                        <option value="600">600 Points = ₹60</option>
+                        <option value="900">900 Points = ₹90</option>
                     </select>
                     <button class="btn btn-withdraw" onclick="submitWithdraw()" style="margin: 10px 0;">✅ Submit Withdraw Request</button>
                     <button class="logout-btn" onclick="hideWithdraw()" style="width: 100%;">❌ Cancel</button>
@@ -658,7 +655,7 @@
             }
             
             if (userPoints < amount) {
-                showMessage(`❌ Insufficient points! You have ${userPoints} points`, 'error');
+                showMessage(`❌ Insufficient points! You have ${userPoints.toFixed(1)} points`, 'error');
                 return;
             }
             
@@ -666,7 +663,23 @@
             updateUserData();
             updateDisplay();
             
+            // Save withdraw request
+            const withdrawRequest = {
+                userPhone: currentUser.phone,
+                userName: name,
+                upi: upi,
+                amount: amount,
+                rupees: amount / 10,
+                date: new Date().toLocaleString(),
+                status: 'pending'
+            };
+            
+            let requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            requests.push(withdrawRequest);
+            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+            
             showMessage(`✅ Withdraw request submitted! ₹${amount/10} will be sent within 24 hours.`, 'success');
+            
             setTimeout(() => document.getElementById('message').innerHTML = '', 5000);
         }
 
@@ -675,7 +688,7 @@
         }
 
         function showReferralSection() {
-            showMessage('👥 Share your referral code: ' + (currentUser.phone || 'SANJUX') + ' - Earn 50 points per referral!', 'success');
+            showMessage('👥 Share your referral code: ' + (currentUser.phone || 'SANJUX') + ' - Earn 25 points per referral!', 'success');
         }
 
         function updateUserData() {
@@ -704,4 +717,4 @@
         }
     </script>
 </body>
-</html>
+                </html>
