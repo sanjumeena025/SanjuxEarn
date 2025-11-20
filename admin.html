@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel - SanjuxEarn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .login-form {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .logout-btn { background: #f44336; }
+        .search-btn { background: #2196F3; }
+        .action-btn { background: #ff9800; padding: 8px 16px; font-size: 14px; }
+        .delete-btn { background: #f44336; }
+        .deactivate-btn { background: #ff9800; }
+        .activate-btn { background: #4CAF50; }
+
+        .request-item, .user-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .pending { background: #fff3cd; }
+        .completed { background: #d4edda; }
+        .rejected { background: #f8d7da; }
+        .deactivated { background: #f8d7da; opacity: 0.7; }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #e8f5e8; color: #2e7d32; }
+        .error { background: #ffebee; color: #c62828; }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .tab-container {
+            margin: 20px 0;
+        }
+        .tab-buttons {
+            display: flex;
+            background: #f1f1f1;
+            border-radius: 8px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .user-actions {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Login Form -->
+    <div id="admin-login" class="container login-form">
+        <h1>🔐 Admin Login - SanjuxEarn</h1>
+        <input type="text" id="admin-username" placeholder="Username">
+        <input type="password" id="admin-password" placeholder="Password">
+        <button onclick="adminLogin()">Login</button>
+        <div id="login-message"></div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="container" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>👨‍💼 Admin Panel - SanjuxEarn</h1>
+            <button class="logout-btn" onclick="adminLogout()">Logout</button>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="total-users">0</div>
+                <div>Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-points">0</div>
+                <div>Total Points</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pending-requests-count">0</div>
+                <div>Pending Requests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-withdrawals">0</div>
+                <div>Total Withdrawals</div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('users-tab')">👥 Users</button>
+                <button class="tab-btn" onclick="showTab('withdraw-tab')">💰 Withdrawals</button>
+                <button class="tab-btn" onclick="showTab('search-tab')">🔍 Search User</button>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="users-tab" class="tab-content active">
+                <h2>👥 All Users</h2>
+                <div id="all-users-list"></div>
+            </div>
+
+            <!-- Withdrawals Tab -->
+            <div id="withdraw-tab" class="tab-content">
+                <h2>📋 Withdraw Requests</h2>
+                <div id="pending-requests"></div>
+                
+                <h2>✅ Completed Requests</h2>
+                <div id="completed-requests"></div>
+
+                <h2>❌ Rejected Requests</h2>
+                <div id="rejected-requests"></div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search-tab" class="tab-content">
+                <h2>🔍 Search User by Phone</h2>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="search-phone" placeholder="Enter 10-digit phone number">
+                    <button class="search-btn" onclick="searchUser()">Search</button>
+                </div>
+                <div id="search-results"></div>
+            </div>
+        </div>
+
+        <div id="admin-message"></div>
+    </div>
+
+    <script>
+        // Admin Credentials - Aapke diye hue username/password
+        const ADMIN_CREDENTIALS = {
+            username: "sanju_mhr",
+            password: "@sanjumhr_25"
+        };
+
+        // Admin Login Function
+        function adminLogin() {
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                localStorage.setItem('adminLoggedIn', 'true');
+                showAdminDashboard();
+                showAdminMessage('✅ Admin login successful!', 'success');
+            } else {
+                showAdminMessage('❌ Invalid username or password!', 'error');
+            }
+        }
+
+        // Show Admin Dashboard
+        function showAdminDashboard() {
+            document.getElementById('admin-login').style.display = 'none';
+            document.getElementById('admin-dashboard').style.display = 'block';
+            loadStatistics();
+            loadAllUsers();
+            loadWithdrawRequests();
+        }
+
+        // Admin Logout
+        function adminLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            document.getElementById('admin-dashboard').style.display = 'none';
+            document.getElementById('admin-login').style.display = 'block';
+            document.getElementById('admin-username').value = '';
+            document.getElementById('admin-password').value = '';
+        }
+
+        // Check if admin already logged in
+        function checkAdminLogin() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                showAdminDashboard();
+            }
+        }
+
+        // Tab Navigation
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove active from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            // Activate button
+            event.target.classList.add('active');
+        }
+
+        // Load Statistics
+        function loadStatistics() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            
+            let totalUsers = Object.keys(users).length;
+            let totalPoints = 0;
+            let pendingRequests = 0;
+            let totalWithdrawals = 0;
+
+            // Calculate total points
+            Object.values(users).forEach(user => {
+                totalPoints += user.points || 0;
+            });
+
+            // Calculate requests
+            requests.forEach(request => {
+                if (request.status === 'pending') pendingRequests++;
+                if (request.status === 'completed') totalWithdrawals += request.amount;
+            });
+
+            document.getElementById('total-users').textContent = totalUsers;
+            document.getElementById('total-points').textContent = totalPoints;
+            document.getElementById('pending-requests-count').textContent = pendingRequests;
+            document.getElementById('total-withdrawals').textContent = '₹' + totalWithdrawals;
+        }
+
+        // Load All Users
+        function loadAllUsers() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const usersList = document.getElementById('all-users-list');
+            usersList.innerHTML = '';
+
+            if (Object.keys(users).length === 0) {
+                usersList.innerHTML = '<div class="message">No users found</div>';
+                return;
+            }
+
+            Object.values(users).forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.className = `user-item ${user.status === 'deactivated' ? 'deactivated' : ''}`;
+                userDiv.innerHTML = `
+                    <strong>${user.name}</strong> | 📱 ${user.phone} | 💰 ${user.points || 0} Points
+                    <br><small>Joined: ${user.joinedDate || 'N/A'}</small>
+                    <div class="user-actions">
+                        <button class="action-btn" onclick="changeUserPassword('${user.phone}')">Change Password</button>
+                        ${user.status === 'deactivated' ? 
+                            `<button class="activate-btn" onclick="activateUser('${user.phone}')">Activate</button>` : 
+                            `<button class="deactivate-btn" onclick="deactivateUser('${user.phone}')">Deactivate</button>`
+                        }
+                        <button class="delete-btn" onclick="deleteUser('${user.phone}')">Delete</button>
+                    </div>
+                `;
+                usersList.appendChild(userDiv);
+            });
+        }
+
+        // Search User by Phone
+        function searchUser() {
+            const phone = document.getElementById('search-phone').value;
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const resultsDiv = document.getElementById('search-results');
+            
+            if (!phone || phone.length !== 10) {
+                resultsDiv.innerHTML = '<div class="error">Please enter valid 10-digit phone number</div>';
+                return;
+            }
+
+            const user = users[phone];
+            if (!user) {
+                resultsDiv.innerHTML = '<div class="error">User not found</div>';
+                return;
+            }
+
+            resultsDiv.innerHTML = `
+                <div class="user-item ${user.status === 'deactivated' ? 'deactivated' : ''}">
+                    <h3>👤 User Details</h3>
+                    <p><strong>Name:</strong> ${user.name}</p>
+                    <p><strong>Phone:</strong> ${user.phone}</p>
+                    <p><strong>Points:</strong> ${user.points || 0}</p>
+                    <p><strong>Status:</strong> ${user.status === 'deactivated' ? 'Deactivated' : 'Active'}</p>
+                    <p><strong>Joined:</strong> ${user.joinedDate || 'N/A'}</p>
+                    <div class="user-actions">
+                        <button class="action-btn" onclick="changeUserPassword('${user.phone}')">Change Password</button>
+                        ${user.status === 'deactivated' ? 
+                            `<button class="activate-btn" onclick="activateUser('${user.phone}')">Activate</button>` : 
+                            `<button class="deactivate-btn" onclick="deactivateUser('${user.phone}')">Deactivate</button>`
+                        }
+                        <button class="delete-btn" onclick="deleteUser('${user.phone}')">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load Withdraw Requests
+        function loadWithdrawRequests() {
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            const pendingDiv = document.getElementById('pending-requests');
+            const completedDiv = document.getElementById('completed-requests');
+            const rejectedDiv = document.getElementById('rejected-requests');
+
+            pendingDiv.innerHTML = '';
+            completedDiv.innerHTML = '';
+            rejectedDiv.innerHTML = '';
+
+            const pending = requests.filter(r => r.status === 'pending');
+            const completed = requests.filter(r => r.status === 'completed');
+            const rejected = requests.filter(r => r.status === 'rejected');
+
+            if (pending.length === 0) pendingDiv.innerHTML = '<div class="message">No pending requests</div>';
+            if (completed.length === 0) completedDiv.innerHTML = '<div class="message">No completed requests</div>';
+            if (rejected.length === 0) rejectedDiv.innerHTML = '<div class="message">No rejected requests</div>';
+
+            // Display pending requests
+            pending.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.className = 'request-item pending';
+                requestDiv.innerHTML = `
+                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
+                    <br>💰 ${request.points} Points (₹${request.amount})
+                    <br>📧 UPI: ${request.upiId}
+                    <br>📅 ${request.requestDate}
+                    <div class="user-actions">
+                        <button class="activate-btn" onclick="approveWithdraw('${request.userPhone}', ${request.points}, '${request.upiId}')">Approve</button>
+                        <button class="delete-btn" onclick="rejectWithdraw('${request.userPhone}', ${request.points}, '${request.upiId}')">Reject</button>
+                    </div>
+                `;
+                pendingDiv.appendChild(requestDiv);
+            });
+
+            // Display completed requests
+            completed.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.className = 'request-item completed';
+                requestDiv.innerHTML = `
+                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
+                    <br>💰 ${request.points} Points (₹${request.amount})
+                    <br>📧 UPI: ${request.upiId}
+                    <br>📅 ${request.requestDate}
+                    <br>✅ Completed
+                `;
+                completedDiv.appendChild(requestDiv);
+            });
+
+            // Display rejected requests
+            rejected.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.className = 'request-item rejected';
+                requestDiv.innerHTML = `
+                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
+                    <br>💰 ${request.points} Points (₹${request.amount})
+                    <br>📧 UPI: ${request.upiId}
+                    <br>📅 ${request.requestDate}
+                    <br>❌ Rejected
+                `;
+                rejectedDiv.appendChild(requestDiv);
+            });
+        }
+
+        // User Management Functions
+        function changeUserPassword(phone) {
+            const newPassword = prompt('Enter new password for user ' + phone + ':');
+            if (newPassword && newPassword.length >= 4) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (users[phone]) {
+                    users[phone].password = newPassword;
+                    localStorage.setItem('users', JSON.stringify(users));
+                    showAdminMessage('✅ Password changed successfully for ' + phone, 'success');
+                    loadAllUsers();
+                }
+            } else {
+                showAdminMessage('❌ Password must be at least 4 characters', 'error');
+            }
+        }
+
+        function deactivateUser(phone) {
+            if (confirm('Are you sure you want to deactivate user ' + phone + '?')) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                if (users[phone]) {
+                    users[phone].status = 'deactivated';
+                    localStorage.setItem('users', JSON.stringify(users));
+                    showAdminMessage('✅ User deactivated successfully', 'success');
+                    loadAllUsers();
+                }
+            }
+        }
+
+        function activateUser(phone) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (users[phone]) {
+                users[phone].status = 'active';
+                localStorage.setItem('users', JSON.stringify(users));
+                showAdminMessage('✅ User activated successfully', 'success');
+                loadAllUsers();
+            }
+        }
+
+        function deleteUser(phone) {
+            if (confirm('Are you sure you want to DELETE user ' + phone + '? This action cannot be undone!')) {
+                const users = JSON.parse(localStorage.getItem('users') || '{}');
+                delete users[phone];
+                localStorage.setItem('users', JSON.stringify(users));
+                showAdminMessage('✅ User deleted successfully', 'success');
+                loadAllUsers();
+                loadStatistics();
+            }
+        }
+
+        // Withdraw Management Functions
+        function approveWithdraw(phone, points, upiId) {
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            const requestIndex = requests.findIndex(r => 
+                r.userPhone === phone && r.points === points && r.upiId === upiId && r.status === 'pending'
+            );
+
+            if (requestIndex !== -1) {
+                requests[requestIndex].status = 'completed';
+                requests[requestIndex].processedDate = new Date().toLocaleString();
+                localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+                showAdminMessage('✅ Withdrawal approved successfully!', 'success');
+                loadWithdrawRequests();
+                loadStatistics();
+            }
+        }
+
+        function rejectWithdraw(phone, points, upiId) {
+            const reason = prompt('Enter rejection reason:');
+            if (reason !== null) {
+                const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+                const requestIndex = requests.findIndex(r => 
+                    r.userPhone === phone && r.points === points && r.upiId === upiId && r.status === 'pending'
+                );
+
+                if (requestIndex !== -1) {
+                    // Return points to user
+                    const users = JSON.parse(localStorage.getItem('users') || '{}');
+                    if (users[phone]) {
+                        users[phone].points = (users[phone].points || 0) + points;
+                        localStorage.setItem('users', JSON.stringify(users));
+                    }
+
+                    requests[requestIndex].status = 'rejected';
+                    requests[requestIndex].rejectionReason = reason;
+                    requests[requestIndex].processedDate = new Date().toLocaleString();
+                    localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+                    
+                    showAdminMessage('✅ Withdrawal rejected and points returned to user', 'success');
+                    loadWithdrawRequests();
+                    loadStatistics();
+                }
+            }
+        }
+
+        // Admin Message Function
+        function showAdminMessage(message, type) {
+            const messageDiv = document.getElementById('admin-message');
+            messageDiv.textContent = message;
+            messageDiv.className = 'message ' + type;
+            setTimeout(() => {
+                messageDiv.textContent = '';
+                messageDiv.className = 'message';
+            }, 3000);
+        }
+
+        // Initialize admin panel
+        window.onload = function() {
+            checkAdminLogin();
+        };
+    </script>
+</body>
+</html>
