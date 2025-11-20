@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SanjuxEarn - Login</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 350px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            margin: 10px 0;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        .toggle-auth {
+            color: #666;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        .error {
+            color: red;
+            margin: 10px 0;
+            padding: 10px;
+            background: #ffe6e6;
+            border-radius: 5px;
+        }
+        .success {
+            color: green;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e6ffe6;
+            border-radius: 5x;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 SanjuxEarn</h1>
+        
+        <!-- Login Form -->
+        <div id="login-form">
+            <h2>Login</h2>
+            <input type="text" id="login-phone" placeholder="Enter Phone Number (10 digits)">
+            <input type="password" id="login-password" placeholder="Enter Password">
+            <button onclick="login()">Login</button>
+            <p class="toggle-auth">New user? <a href="#" onclick="showRegister()">Register here</a></p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" style="display: none;">
+            <h2>Register</h2>
+            <input type="text" id="register-name" placeholder="Full Name">
+            <input type="text" id="register-phone" placeholder="Phone Number (10 digits)">
+            <input type="password" id="register-password" placeholder="Create Password">
+            <button onclick="register()">Create Account</button>
+            <p class="toggle-auth">Already have account? <a href="#" onclick="showLogin()">Login here</a></p>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Simple Local Storage System - No Firebase Needed
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = type;
+        }
+
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+            clearMessage();
+        }
+
+        function showLogin() {
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+            clearMessage();
+        }
+
+        function clearMessage() {
+            document.getElementById('message').textContent = '';
+        }
+
+        // Register Function
+        function register() {
+            const name = document.getElementById('register-name').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!name || !phone || !password) {
+                showMessage('Please fill all fields', 'error');
+                return;
+            }
+
+            if (phone.length !== 10) {
+                showMessage('Please enter 10-digit phone number', 'error');
+                return;
+            }
+
+            // Check if user already exists
+            const existingUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            if (existingUsers[phone]) {
+                showMessage('Phone number already registered', 'error');
+                return;
+            }
+
+            // Create new user
+            existingUsers[phone] = {
+                name: name,
+                phone: phone,
+                password: password,
+                points: 0,
+                joinedDate: new Date().toLocaleDateString()
+            };
+
+            localStorage.setItem('users', JSON.stringify(existingUsers));
+            showMessage('Registration successful! Please login.', 'success');
+            showLogin();
+        }
+
+        // Login Function
+        function login() {
+            const phone = document.getElementById('login-phone').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!phone || !password) {
+                showMessage('Please enter phone and password', 'error');
+                return;
+            }
+
+            const existingUsers = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = existingUsers[phone];
+
+            if (!user) {
+                showMessage('Phone number not registered', 'error');
+                return;
+            }
+
+            if (user.password !== password) {
+                showMessage('Incorrect password', 'error');
+                return;
+            }
+
+            // Login successful
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            showMessage('Login successful! Redirecting...', 'success');
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 1000);
+        }
+
+        // Check if already logged in
+        window.onload = function() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+            }
+        };
+    </script>
+</body>
+</html>
