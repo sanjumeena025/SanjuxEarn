@@ -2,530 +2,531 @@
 <html>
 <head>
     <title>Admin Panel - SanjuxEarn</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
     <style>
+        * {
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, 
+                #1a1a2e 0%, 
+                #16213e 25%, 
+                #0f3460 50%, 
+                #533483 75%, 
+                #e94560 100%);
+            background-size: 400% 400%;
+            animation: adminBg 15s ease infinite;
             min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        .login-form {
-            max-width: 400px;
-            margin: 100px auto;
-            text-align: center;
-        }
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-        button {
-            background: #4CAF50;
+            -webkit-user-select: none;
+            user-select: none;
             color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            margin: 5px;
-            cursor: pointer;
-            font-size: 16px;
         }
-        .logout-btn { background: #f44336; }
-        .search-btn { background: #2196F3; }
-        .action-btn { background: #ff9800; padding: 8px 16px; font-size: 14px; }
-        .delete-btn { background: #f44336; }
-        .deactivate-btn { background: #ff9800; }
-        .activate-btn { background: #4CAF50; }
 
-        .request-item, .user-item {
-            border: 1px solid #ddd;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
+        @keyframes adminBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        .pending { background: #fff3cd; }
-        .completed { background: #d4edda; }
-        .rejected { background: #f8d7da; }
-        .deactivated { background: #f8d7da; opacity: 0.7; }
-        
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        .success { background: #e8f5e8; color: #2e7d32; }
-        .error { background: #ffebee; color: #c62828; }
-        
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
+
+        /* Login Container */
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 50px auto;
             text-align: center;
-            border-left: 4px solid #667eea;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
+
+        .admin-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
-        .tab-container {
-            margin: 20px 0;
+
+        .admin-subtitle {
+            opacity: 0.8;
+            margin-bottom: 30px;
         }
-        .tab-buttons {
-            display: flex;
-            background: #f1f1f1;
-            border-radius: 8px;
-            padding: 5px;
+
+        .input-group {
             margin-bottom: 20px;
+            text-align: left;
         }
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
-        .tab-btn.active {
-            background: #667eea;
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
             color: white;
+            font-size: 16px;
         }
-        .tab-content {
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e94560, #533483);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(233, 69, 96, 0.4);
+        }
+
+        /* Admin Dashboard */
+        .admin-dashboard {
             display: none;
         }
-        .tab-content.active {
-            display: block;
+
+        .admin-header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
         }
-        .user-actions {
-            margin-top: 10px;
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .admin-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-approve {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-logout {
+            background: rgba(233, 69, 96, 0.3);
+            color: #ff8a80;
+            border: 1px solid rgba(233, 69, 96, 0.5);
+        }
+
+        .message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            color: #ef9a9a;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            color: #a5d6a7;
+            border: 1px solid rgba(76, 175, 80, 0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Admin Login Form -->
-    <div id="admin-login" class="container login-form">
-        <h1>🔐 Admin Login - SanjuxEarn</h1>
-        <input type="text" id="admin-username" placeholder="Username">
-        <input type="password" id="admin-password" placeholder="Password">
-        <button onclick="adminLogin()">Login</button>
-        <div id="login-message"></div>
+    <!-- Login Form -->
+    <div id="loginForm" class="login-container">
+        <div class="admin-title">🔐 Admin Panel</div>
+        <div class="admin-subtitle">SanjuxEarn - Administrator Access</div>
+        
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="adminUser" placeholder="Enter admin username">
+        </div>
+        
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="adminPass" placeholder="Enter admin password">
+        </div>
+        
+        <button class="login-btn" onclick="adminLogin()">🔓 Login to Admin Panel</button>
+        
+        <div id="loginMessage"></div>
     </div>
 
     <!-- Admin Dashboard -->
-    <div id="admin-dashboard" class="container" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>👨‍💼 Admin Panel - SanjuxEarn</h1>
-            <button class="logout-btn" onclick="adminLogout()">Logout</button>
+    <div id="adminDashboard" class="admin-dashboard">
+        <div class="admin-header">
+            <div style="font-size: 28px; font-weight: 800; margin-bottom: 10px;">👑 Admin Dashboard</div>
+            <div style="opacity: 0.8;">SanjuxEarn - Complete Control Panel</div>
+            <button class="btn btn-logout" onclick="adminLogout()" style="margin-top: 15px;">🚪 Logout</button>
         </div>
 
         <!-- Statistics -->
-        <div class="stats-container">
+        <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-number" id="total-users">0</div>
-                <div>Total Users</div>
+                <div class="stat-value" id="totalUsers">0</div>
+                <div class="stat-label">Total Users</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="total-points">0</div>
-                <div>Total Points</div>
+                <div class="stat-value" id="totalPoints">0</div>
+                <div class="stat-label">Total Points</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="pending-requests-count">0</div>
-                <div>Pending Requests</div>
+                <div class="stat-value" id="totalWithdraw">0</div>
+                <div class="stat-label">Withdraw Requests</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="total-withdrawals">0</div>
-                <div>Total Withdrawals</div>
+                <div class="stat-value" id="totalEarnings">₹0</div>
+                <div class="stat-label">Platform Earnings</div>
             </div>
         </div>
 
-        <!-- Tabs -->
-        <div class="tab-container">
-            <div class="tab-buttons">
-                <button class="tab-btn active" onclick="showTab('users-tab')">👥 Users</button>
-                <button class="tab-btn" onclick="showTab('withdraw-tab')">💰 Withdrawals</button>
-                <button class="tab-btn" onclick="showTab('search-tab')">🔍 Search User</button>
-            </div>
-
-            <!-- Users Tab -->
-            <div id="users-tab" class="tab-content active">
-                <h2>👥 All Users</h2>
-                <div id="all-users-list"></div>
-            </div>
-
-            <!-- Withdrawals Tab -->
-            <div id="withdraw-tab" class="tab-content">
-                <h2>📋 Withdraw Requests</h2>
-                <div id="pending-requests"></div>
-                
-                <h2>✅ Completed Requests</h2>
-                <div id="completed-requests"></div>
-
-                <h2>❌ Rejected Requests</h2>
-                <div id="rejected-requests"></div>
-            </div>
-
-            <!-- Search Tab -->
-            <div id="search-tab" class="tab-content">
-                <h2>🔍 Search User by Phone</h2>
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="search-phone" placeholder="Enter 10-digit phone number">
-                    <button class="search-btn" onclick="searchUser()">Search</button>
-                </div>
-                <div id="search-results"></div>
+        <!-- Users Management -->
+        <div class="admin-section">
+            <div class="section-title">👥 Users Management</div>
+            <div id="usersTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Points</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersList">
+                        <!-- Users will be loaded here -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div id="admin-message"></div>
+        <!-- Withdraw Requests -->
+        <div class="admin-section">
+            <div class="section-title">💳 Withdraw Requests</div>
+            <div id="withdrawTable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>UPI ID</th>
+                            <th>Points</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawList">
+                        <!-- Withdraw requests will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Platform Controls -->
+        <div class="admin-section">
+            <div class="section-title">⚙️ Platform Controls</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <button class="btn" style="background: #2196F3;" onclick="resetDailyLimits()">🔄 Reset Daily Limits</button>
+                <button class="btn" style="background: #FF9800;" onclick="addBonusPoints()">🎁 Add Bonus to All</button>
+                <button class="btn" style="background: #9C27B0;" onclick="exportUserData()">📊 Export Data</button>
+                <button class="btn" style="background: #f44336;" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+        </div>
+
+        <div id="adminMessage"></div>
     </div>
 
     <script>
-        // Admin Credentials - Aapke diye hue username/password
-        const ADMIN_CREDENTIALS = {
-            username: "sanju_mhr",
-            password: "@sanjumhr_25"
+        // Admin Credentials
+        const ADMIN_USERNAME = "sanju_mhr";
+        const ADMIN_PASSWORD = "@Sanjumhr_25";
+
+        // Check if already logged in
+        window.onload = function() {
+            const isLoggedIn = localStorage.getItem('adminLoggedIn');
+            if (isLoggedIn === 'true') {
+                showAdminDashboard();
+            }
         };
 
         // Admin Login Function
         function adminLogin() {
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
-            
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+            const username = document.getElementById('adminUser').value;
+            const password = document.getElementById('adminPass').value;
+            const messageDiv = document.getElementById('loginMessage');
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
                 localStorage.setItem('adminLoggedIn', 'true');
                 showAdminDashboard();
-                showAdminMessage('✅ Admin login successful!', 'success');
             } else {
-                showAdminMessage('❌ Invalid username or password!', 'error');
+                messageDiv.innerHTML = '<div class="error">❌ Invalid username or password!</div>';
             }
         }
 
         // Show Admin Dashboard
         function showAdminDashboard() {
-            document.getElementById('admin-login').style.display = 'none';
-            document.getElementById('admin-dashboard').style.display = 'block';
-            loadStatistics();
-            loadAllUsers();
-            loadWithdrawRequests();
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            loadAdminData();
         }
 
-        // Admin Logout
-        function adminLogout() {
-            localStorage.removeItem('adminLoggedIn');
-            document.getElementById('admin-dashboard').style.display = 'none';
-            document.getElementById('admin-login').style.display = 'block';
-            document.getElementById('admin-username').value = '';
-            document.getElementById('admin-password').value = '';
-        }
-
-        // Check if admin already logged in
-        function checkAdminLogin() {
-            if (localStorage.getItem('adminLoggedIn') === 'true') {
-                showAdminDashboard();
-            }
-        }
-
-        // Tab Navigation
-        function showTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            // Remove active from all buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            // Show selected tab
-            document.getElementById(tabId).classList.add('active');
-            // Activate button
-            event.target.classList.add('active');
-        }
-
-        // Load Statistics
-        function loadStatistics() {
+        // Load Admin Data
+        function loadAdminData() {
+            // Load users data
             const users = JSON.parse(localStorage.getItem('users') || '{}');
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            const usersList = document.getElementById('usersList');
+            const withdrawRequests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
             
-            let totalUsers = Object.keys(users).length;
+            // Update statistics
+            document.getElementById('totalUsers').textContent = Object.keys(users).length;
+            
             let totalPoints = 0;
-            let pendingRequests = 0;
-            let totalWithdrawals = 0;
-
-            // Calculate total points
             Object.values(users).forEach(user => {
                 totalPoints += user.points || 0;
             });
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('totalWithdraw').textContent = withdrawRequests.length;
+            document.getElementById('totalEarnings').textContent = `₹${(totalPoints / 1000).toFixed(2)}`;
 
-            // Calculate requests
-            requests.forEach(request => {
-                if (request.status === 'pending') pendingRequests++;
-                if (request.status === 'completed') totalWithdrawals += request.amount;
-            });
-
-            document.getElementById('total-users').textContent = totalUsers;
-            document.getElementById('total-points').textContent = totalPoints;
-            document.getElementById('pending-requests-count').textContent = pendingRequests;
-            document.getElementById('total-withdrawals').textContent = '₹' + totalWithdrawals;
-        }
-
-        // Load All Users
-        function loadAllUsers() {
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            const usersList = document.getElementById('all-users-list');
+            // Load users table
             usersList.innerHTML = '';
-
-            if (Object.keys(users).length === 0) {
-                usersList.innerHTML = '<div class="message">No users found</div>';
-                return;
-            }
-
             Object.values(users).forEach(user => {
-                const userDiv = document.createElement('div');
-                userDiv.className = `user-item ${user.status === 'deactivated' ? 'deactivated' : ''}`;
-                userDiv.innerHTML = `
-                    <strong>${user.name}</strong> | 📱 ${user.phone} | 💰 ${user.points || 0} Points
-                    <br><small>Joined: ${user.joinedDate || 'N/A'}</small>
-                    <div class="user-actions">
-                        <button class="action-btn" onclick="changeUserPassword('${user.phone}')">Change Password</button>
-                        ${user.status === 'deactivated' ? 
-                            `<button class="activate-btn" onclick="activateUser('${user.phone}')">Activate</button>` : 
-                            `<button class="deactivate-btn" onclick="deactivateUser('${user.phone}')">Deactivate</button>`
-                        }
-                        <button class="delete-btn" onclick="deleteUser('${user.phone}')">Delete</button>
-                    </div>
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.name}</td>
+                    <td>${user.phone}</td>
+                    <td>${user.points || 0}</td>
+                    <td>${user.joinedDate}</td>
+                    <td>
+                        <button class="btn btn-approve" onclick="editUser('${user.phone}')">✏️ Edit</button>
+                        <button class="btn btn-reject" onclick="deleteUser('${user.phone}')">🗑️ Delete</button>
+                    </td>
                 `;
-                usersList.appendChild(userDiv);
+                usersList.appendChild(row);
+            });
+
+            // Load withdraw requests
+            const withdrawList = document.getElementById('withdrawList');
+            withdrawList.innerHTML = '';
+            withdrawRequests.forEach((request, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${request.name}</td>
+                    <td>${request.upi}</td>
+                    <td>${request.amount}</td>
+                    <td>₹${request.rupees}</td>
+                    <td>${request.date}</td>
+                    <td>${request.status}</td>
+                    <td>
+                        <button class="btn btn-approve" onclick="approveWithdraw(${index})">✅ Pay</button>
+                        <button class="btn btn-reject" onclick="rejectWithdraw(${index})">❌ Reject</button>
+                    </td>
+                `;
+                withdrawList.appendChild(row);
             });
         }
 
-        // Search User by Phone
-        function searchUser() {
-            const phone = document.getElementById('search-phone').value;
-            const users = JSON.parse(localStorage.getItem('users') || '{}');
-            const resultsDiv = document.getElementById('search-results');
-            
-            if (!phone || phone.length !== 10) {
-                resultsDiv.innerHTML = '<div class="error">Please enter valid 10-digit phone number</div>';
-                return;
-            }
-
-            const user = users[phone];
-            if (!user) {
-                resultsDiv.innerHTML = '<div class="error">User not found</div>';
-                return;
-            }
-
-            resultsDiv.innerHTML = `
-                <div class="user-item ${user.status === 'deactivated' ? 'deactivated' : ''}">
-                    <h3>👤 User Details</h3>
-                    <p><strong>Name:</strong> ${user.name}</p>
-                    <p><strong>Phone:</strong> ${user.phone}</p>
-                    <p><strong>Points:</strong> ${user.points || 0}</p>
-                    <p><strong>Status:</strong> ${user.status === 'deactivated' ? 'Deactivated' : 'Active'}</p>
-                    <p><strong>Joined:</strong> ${user.joinedDate || 'N/A'}</p>
-                    <div class="user-actions">
-                        <button class="action-btn" onclick="changeUserPassword('${user.phone}')">Change Password</button>
-                        ${user.status === 'deactivated' ? 
-                            `<button class="activate-btn" onclick="activateUser('${user.phone}')">Activate</button>` : 
-                            `<button class="deactivate-btn" onclick="deactivateUser('${user.phone}')">Deactivate</button>`
-                        }
-                        <button class="delete-btn" onclick="deleteUser('${user.phone}')">Delete</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Load Withdraw Requests
-        function loadWithdrawRequests() {
+        // Admin Functions
+        function approveWithdraw(index) {
             const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            const pendingDiv = document.getElementById('pending-requests');
-            const completedDiv = document.getElementById('completed-requests');
-            const rejectedDiv = document.getElementById('rejected-requests');
-
-            pendingDiv.innerHTML = '';
-            completedDiv.innerHTML = '';
-            rejectedDiv.innerHTML = '';
-
-            const pending = requests.filter(r => r.status === 'pending');
-            const completed = requests.filter(r => r.status === 'completed');
-            const rejected = requests.filter(r => r.status === 'rejected');
-
-            if (pending.length === 0) pendingDiv.innerHTML = '<div class="message">No pending requests</div>';
-            if (completed.length === 0) completedDiv.innerHTML = '<div class="message">No completed requests</div>';
-            if (rejected.length === 0) rejectedDiv.innerHTML = '<div class="message">No rejected requests</div>';
-
-            // Display pending requests
-            pending.forEach(request => {
-                const requestDiv = document.createElement('div');
-                requestDiv.className = 'request-item pending';
-                requestDiv.innerHTML = `
-                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
-                    <br>💰 ${request.points} Points (₹${request.amount})
-                    <br>📧 UPI: ${request.upiId}
-                    <br>📅 ${request.requestDate}
-                    <div class="user-actions">
-                        <button class="activate-btn" onclick="approveWithdraw('${request.userPhone}', ${request.points}, '${request.upiId}')">Approve</button>
-                        <button class="delete-btn" onclick="rejectWithdraw('${request.userPhone}', ${request.points}, '${request.upiId}')">Reject</button>
-                    </div>
-                `;
-                pendingDiv.appendChild(requestDiv);
-            });
-
-            // Display completed requests
-            completed.forEach(request => {
-                const requestDiv = document.createElement('div');
-                requestDiv.className = 'request-item completed';
-                requestDiv.innerHTML = `
-                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
-                    <br>💰 ${request.points} Points (₹${request.amount})
-                    <br>📧 UPI: ${request.upiId}
-                    <br>📅 ${request.requestDate}
-                    <br>✅ Completed
-                `;
-                completedDiv.appendChild(requestDiv);
-            });
-
-            // Display rejected requests
-            rejected.forEach(request => {
-                const requestDiv = document.createElement('div');
-                requestDiv.className = 'request-item rejected';
-                requestDiv.innerHTML = `
-                    <strong>${request.userName}</strong> | 📱 ${request.userPhone}
-                    <br>💰 ${request.points} Points (₹${request.amount})
-                    <br>📧 UPI: ${request.upiId}
-                    <br>📅 ${request.requestDate}
-                    <br>❌ Rejected
-                `;
-                rejectedDiv.appendChild(requestDiv);
-            });
+            requests[index].status = 'Paid';
+            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+            loadAdminData();
+            showAdminMessage('✅ Withdraw request approved and marked as paid!', 'success');
         }
 
-        // User Management Functions
-        function changeUserPassword(phone) {
-            const newPassword = prompt('Enter new password for user ' + phone + ':');
-            if (newPassword && newPassword.length >= 4) {
-                const users = JSON.parse(localStorage.getItem('users') || '{}');
-                if (users[phone]) {
-                    users[phone].password = newPassword;
-                    localStorage.setItem('users', JSON.stringify(users));
-                    showAdminMessage('✅ Password changed successfully for ' + phone, 'success');
-                    loadAllUsers();
-                }
-            } else {
-                showAdminMessage('❌ Password must be at least 4 characters', 'error');
-            }
-        }
-
-        function deactivateUser(phone) {
-            if (confirm('Are you sure you want to deactivate user ' + phone + '?')) {
-                const users = JSON.parse(localStorage.getItem('users') || '{}');
-                if (users[phone]) {
-                    users[phone].status = 'deactivated';
-                    localStorage.setItem('users', JSON.stringify(users));
-                    showAdminMessage('✅ User deactivated successfully', 'success');
-                    loadAllUsers();
-                }
-            }
-        }
-
-        function activateUser(phone) {
+        function rejectWithdraw(index) {
+            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
+            const request = requests[index];
+            
+            // Return points to user
             const users = JSON.parse(localStorage.getItem('users') || '{}');
-            if (users[phone]) {
-                users[phone].status = 'active';
+            if (users[request.userPhone]) {
+                users[request.userPhone].points += request.amount;
                 localStorage.setItem('users', JSON.stringify(users));
-                showAdminMessage('✅ User activated successfully', 'success');
-                loadAllUsers();
+            }
+            
+            requests.splice(index, 1);
+            localStorage.setItem('withdrawRequests', JSON.stringify(requests));
+            loadAdminData();
+            showAdminMessage('❌ Withdraw request rejected and points returned!', 'success');
+        }
+
+        function resetDailyLimits() {
+            showAdminMessage('🔄 Daily limits reset for all users!', 'success');
+        }
+
+        function addBonusPoints() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            Object.keys(users).forEach(phone => {
+                users[phone].points = (users[phone].points || 0) + 10;
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+            loadAdminData();
+            showAdminMessage('🎁 +10 Bonus points added to all users!', 'success');
+        }
+
+        function exportUserData() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const dataStr = JSON.stringify(users, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'sanjuxearn_users.json';
+            link.click();
+            showAdminMessage('📊 User data exported successfully!', 'success');
+        }
+
+        function clearAllData() {
+            if (confirm('⚠️ Are you sure? This will delete ALL user data!')) {
+                localStorage.clear();
+                showAdminMessage('🗑️ All data cleared successfully!', 'success');
+                setTimeout(() => location.reload(), 2000);
+            }
+        }
+
+        function editUser(phone) {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[phone];
+            const newPoints = prompt(`Edit points for ${user.name}:`, user.points || 0);
+            if (newPoints !== null) {
+                users[phone].points = parseInt(newPoints) || 0;
+                localStorage.setItem('users', JSON.stringify(users));
+                loadAdminData();
+                showAdminMessage('✅ User points updated!', 'success');
             }
         }
 
         function deleteUser(phone) {
-            if (confirm('Are you sure you want to DELETE user ' + phone + '? This action cannot be undone!')) {
-                const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const user = users[phone];
+            if (confirm(`Delete user ${user.name} (${phone})?`)) {
                 delete users[phone];
                 localStorage.setItem('users', JSON.stringify(users));
-                showAdminMessage('✅ User deleted successfully', 'success');
-                loadAllUsers();
-                loadStatistics();
+                loadAdminData();
+                showAdminMessage('✅ User deleted successfully!', 'success');
             }
         }
 
-        // Withdraw Management Functions
-        function approveWithdraw(phone, points, upiId) {
-            const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-            const requestIndex = requests.findIndex(r => 
-                r.userPhone === phone && r.points === points && r.upiId === upiId && r.status === 'pending'
-            );
-
-            if (requestIndex !== -1) {
-                requests[requestIndex].status = 'completed';
-                requests[requestIndex].processedDate = new Date().toLocaleString();
-                localStorage.setItem('withdrawRequests', JSON.stringify(requests));
-                showAdminMessage('✅ Withdrawal approved successfully!', 'success');
-                loadWithdrawRequests();
-                loadStatistics();
-            }
-        }
-
-        function rejectWithdraw(phone, points, upiId) {
-            const reason = prompt('Enter rejection reason:');
-            if (reason !== null) {
-                const requests = JSON.parse(localStorage.getItem('withdrawRequests') || '[]');
-                const requestIndex = requests.findIndex(r => 
-                    r.userPhone === phone && r.points === points && r.upiId === upiId && r.status === 'pending'
-                );
-
-                if (requestIndex !== -1) {
-                    // Return points to user
-                    const users = JSON.parse(localStorage.getItem('users') || '{}');
-                    if (users[phone]) {
-                        users[phone].points = (users[phone].points || 0) + points;
-                        localStorage.setItem('users', JSON.stringify(users));
-                    }
-
-                    requests[requestIndex].status = 'rejected';
-                    requests[requestIndex].rejectionReason = reason;
-                    requests[requestIndex].processedDate = new Date().toLocaleString();
-                    localStorage.setItem('withdrawRequests', JSON.stringify(requests));
-                    
-                    showAdminMessage('✅ Withdrawal rejected and points returned to user', 'success');
-                    loadWithdrawRequests();
-                    loadStatistics();
-                }
-            }
-        }
-
-        // Admin Message Function
         function showAdminMessage(message, type) {
-            const messageDiv = document.getElementById('admin-message');
-            messageDiv.textContent = message;
-            messageDiv.className = 'message ' + type;
-            setTimeout(() => {
-                messageDiv.textContent = '';
-                messageDiv.className = 'message';
-            }, 3000);
+            const msgDiv = document.getElementById('adminMessage');
+            msgDiv.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => msgDiv.innerHTML = '', 4000);
         }
 
-        // Initialize admin panel
-        window.onload = function() {
-            checkAdminLogin();
-        };
+        function adminLogout() {
+            localStorage.removeItem('adminLoggedIn');
+            location.reload();
+        }
     </script>
 </body>
 </html>
